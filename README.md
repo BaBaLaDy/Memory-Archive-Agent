@@ -57,13 +57,13 @@ Memory Archive Agent (MAA) is an AI-driven desktop knowledge management tool bui
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### 1. Prerequisites
 
 - Python 3.10+ (backend)
 - Node.js 18+ (frontend / desktop app)
 - An LLM API key (DashScope, OpenAI, Claude, or any OpenAI-compatible provider)
 
-### Installation
+### 2. Installation
 
 #### Backend
 
@@ -97,34 +97,53 @@ npm install
 | `vite` | Build tool + dev server |
 | `concurrently` + `wait-on` | Dev workflow orchestration |
 
-#### Environment Variables
+### 3. Configuration
+
+MAA uses two config files:
+
+| File | Purpose | Contains |
+|------|---------|----------|
+| `.env` | Secrets & credentials | API keys, tokens — **never commit** |
+| `config.json` | App settings | LLM provider, storage path, Git repo, channels — **safe to share** |
+
+#### Step 1 — Environment Variables (`.env`)
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` with your API credentials:
+Edit `.env` and fill in your API keys:
 
 ```env
-DASHSCOPE_API_KEY=sk-your-api-key
-# FIRECRAWL_API_KEY=your-firecrawl-key   # optional, for web scraping
+# Required: LLM API key
+DASHSCOPE_API_KEY=sk-your-api-key-here
+
+# Optional: web scraping
+MAA_FIRECRAWL_API_KEY=your-firecrawl-key-here
+
+# Optional: bot tokens (Phase 3)
+MAA_TELEGRAM_BOT_TOKEN=your-telegram-bot-token-here
+MAA_FEISHU_APP_ID=your-feishu-app-id-here
+MAA_FEISHU_APP_SECRET=your-feishu-app-secret-here
 ```
 
-### Configuration
+> You can also override the model and storage path via env: `MAA_LLM_MODEL`, `MAA_API_BASE`, `MAA_STORAGE_ROOT`.
+
+#### Step 2 — App Settings (`config.json`)
 
 ```bash
 cp config.example.json config.json
 ```
 
-Edit `config.json` with your LLM credentials:
+Edit `config.json`:
 
 ```json
 {
   "llm": {
     "provider": "dashscope",
-    "api_key": "sk-your-api-key",
     "model": "qwen3.6-plus",
-    "api_base": "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    "api_base": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "extra_body": {"enable_thinking": false}
   },
   "storage": {
     "root": "~/MemoryArchive"
@@ -132,11 +151,32 @@ Edit `config.json` with your LLM credentials:
   "git": {
     "repo_url": "git@github.com:your-username/agent-memory.git",
     "branch": "main"
+  },
+  "categories": ["projects", "research", "personal", "inbox"],
+  "channels": {
+    "cli": { "enabled": true },
+    "mcp": { "enabled": false, "port": 3000 },
+    "telegram": { "enabled": false },
+    "feishu": { "enabled": false }
   }
 }
 ```
 
-### Launch
+| Field | Description |
+|-------|-------------|
+| `llm.provider` | LLM provider: `dashscope`, `openai`, `claude`, or any OpenAI-compatible name |
+| `llm.model` | Model name (e.g. `qwen3.6-plus`, `gpt-4o`, `claude-opus-4-7`) |
+| `llm.api_base` | API endpoint URL |
+| `llm.extra_body` | Extra request body (e.g. `{"enable_thinking": false}` for Qwen) |
+| `storage.root` | Knowledge base root directory |
+| `git.repo_url` | Remote Git repo for sync (optional, leave empty to skip) |
+| `git.branch` | Git branch name |
+| `categories` | Top-level archive categories |
+| `channels` | Enable/disable I/O channels and their settings |
+
+> **Important**: API keys go in `.env`, **not** in `config.json`. The two files are merged at runtime — env vars take precedence.
+
+### 4. Launch
 
 ```bash
 # Start the desktop app (auto-starts the backend server)

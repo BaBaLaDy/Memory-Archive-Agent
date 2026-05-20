@@ -57,13 +57,13 @@ Memory Archive Agent (MAA) 是一个基于 ReAct Agent 架构的 AI 驱动型桌
 
 ## 🚀 快速开始
 
-### 环境要求
+### 1. 环境要求
 
 - Python 3.10+（后端）
 - Node.js 18+（前端 / 桌面应用）
 - LLM API Key（DashScope、OpenAI、Claude 或任何兼容 OpenAI 接口的提供商）
 
-### 安装
+### 2. 安装
 
 #### 后端
 
@@ -97,34 +97,53 @@ npm install
 | `vite` | 构建工具 + 开发服务器 |
 | `concurrently` + `wait-on` | 开发流程编排 |
 
-#### 环境变量
+### 3. 配置
+
+MAA 使用两个配置文件：
+
+| 文件 | 用途 | 内容 |
+|------|------|------|
+| `.env` | 密钥 & 凭据 | API Key、Token 等敏感信息 — **切勿提交到 Git** |
+| `config.json` | 应用设置 | LLM 提供商、存储路径、Git 仓库、通道开关 — **可安全分享** |
+
+#### 第一步 — 环境变量（`.env`）
 
 ```bash
 cp .env.example .env
 ```
 
-编辑 `.env` 填入 API 凭据：
+编辑 `.env`，填入你的 API 密钥：
 
 ```env
-DASHSCOPE_API_KEY=sk-your-api-key
-# FIRECRAWL_API_KEY=your-firecrawl-key   # 可选，用于网页抓取
+# 必填：LLM API Key
+DASHSCOPE_API_KEY=sk-your-api-key-here
+
+# 可选：网页抓取
+MAA_FIRECRAWL_API_KEY=your-firecrawl-key-here
+
+# 可选：Bot Token（Phase 3 阶段）
+MAA_TELEGRAM_BOT_TOKEN=your-telegram-bot-token-here
+MAA_FEISHU_APP_ID=your-feishu-app-id-here
+MAA_FEISHU_APP_SECRET=your-feishu-app-secret-here
 ```
 
-### 配置
+> 也可以通过环境变量覆盖模型和存储路径：`MAA_LLM_MODEL`、`MAA_API_BASE`、`MAA_STORAGE_ROOT`。
+
+#### 第二步 — 应用设置（`config.json`）
 
 ```bash
 cp config.example.json config.json
 ```
 
-编辑 `config.json`，填入你的 LLM 凭据：
+编辑 `config.json`：
 
 ```json
 {
   "llm": {
     "provider": "dashscope",
-    "api_key": "sk-your-api-key",
     "model": "qwen3.6-plus",
-    "api_base": "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    "api_base": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "extra_body": {"enable_thinking": false}
   },
   "storage": {
     "root": "~/MemoryArchive"
@@ -132,26 +151,47 @@ cp config.example.json config.json
   "git": {
     "repo_url": "git@github.com:your-username/agent-memory.git",
     "branch": "main"
+  },
+  "categories": ["projects", "research", "personal", "inbox"],
+  "channels": {
+    "cli": { "enabled": true },
+    "mcp": { "enabled": false, "port": 3000 },
+    "telegram": { "enabled": false },
+    "feishu": { "enabled": false }
   }
 }
 ```
 
-### 启动
+| 字段 | 说明 |
+|------|------|
+| `llm.provider` | LLM 提供商：`dashscope`、`openai`、`claude`，或任意 OpenAI 兼容名称 |
+| `llm.model` | 模型名（如 `qwen3.6-plus`、`gpt-4o`、`claude-opus-4-7`） |
+| `llm.api_base` | API 端点地址 |
+| `llm.extra_body` | 额外请求体（如 Qwen 的 `{"enable_thinking": false}`） |
+| `storage.root` | 知识库根目录 |
+| `git.repo_url` | Git 远程仓库地址（可选，留空则跳过同步） |
+| `git.branch` | Git 分支名 |
+| `categories` | 顶层归档分类 |
+| `channels` | 各 I/O 通道的启用/禁用及配置 |
+
+> **注意**：API Key 放在 `.env` 中，**不要**写在 `config.json` 里。两个文件在运行时会合并——环境变量优先级更高。
+
+### 4. 启动
 
 ```bash
-# 启动桌面应用
+# 启动桌面应用（自动启动后端服务）
 cd desktop && npm run electron:dev
 ```
 
 或者不使用桌面应用，直接使用 CLI：
+
 ```bash
 python cli.py
 ```
 
+后端服务启动（桌面应用会自动启动后端）：
 
-后端服务启动（桌面应用会自动启动后端）
 ```bash
-# 启动后端 API 服务
 python server.py
 # 服务运行在 http://127.0.0.1:8899
 ```
