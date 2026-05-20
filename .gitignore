@@ -1,0 +1,38 @@
+# 环境变量
+.env
+
+# 个人配置
+config.json
+
+# Claude Code 内部配置
+.claude/
+
+# 个人记忆数据
+.maa/
+
+# 个人笔记
+inbox/
+other_docs/
+
+# 个人方案文档
+架构改进方案.md
+docs/改进备忘录,md
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+CLAUDE.md
+
+docs/

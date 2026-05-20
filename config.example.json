@@ -1,0 +1,22 @@
+{
+  "llm": {
+    "provider": "",
+    "model": "",
+    "api_base": "",
+    "extra_body": {"enable_thinking": false}
+  },
+  "git": {
+    "repo_url": "",
+    "branch": ""
+  },
+  "storage": {
+    "root": ""
+  },
+  "categories": ["projects", "research", "personal", "inbox"],
+  "channels": {
+    "cli": { "enabled": true },
+    "mcp": { "enabled": false, "port": 3000 },
+    "telegram": { "enabled": false },
+    "feishu": { "enabled": false }
+  }
+}
