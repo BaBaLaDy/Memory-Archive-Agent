@@ -200,6 +200,8 @@ python server.py
 
 ### 桌面应用
 
+**快捷键**：<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> 呼出，<kbd>Esc</kbd> 隐藏。
+
 1. **归档文件** — 拖拽任意文件（.md, .pdf, .docx, .xlsx, .pptx, .txt）到输入框
 2. **归档网页** — 粘贴 URL，Agent 通过 Firecrawl 抓取并提取内容
 3. **搜索知识** — 输入问题，如"我关于向量数据库学了什么？"

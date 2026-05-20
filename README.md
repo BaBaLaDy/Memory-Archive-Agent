@@ -200,6 +200,8 @@ python server.py
 
 ### Desktop App
 
+**Keyboard Shortcuts**: <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> to show, <kbd>Esc</kbd> to hide.
+
 1. **Archive a file** — Drag any file (.md, .pdf, .docx, .xlsx, .pptx, .txt) into the input box
 2. **Archive a webpage** — Paste a URL; the agent scrapes and extracts content via Firecrawl
 3. **Search your knowledge** — Type a question like "What did I learn about vector databases?"
